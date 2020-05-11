@@ -103,13 +103,13 @@ const nameAtom = declareAtom('', on => [
 ])
 
 export const Form = () => {
-  const name = useAtom(nameAtom)
+  const getName = useAtom(nameAtom)
   const handleChangeName = useAction(e => changeName(e.target.value))
 
   return (
     <form>
       <label htmlFor="name">Enter your name</label>
-      <input id="name" value={name.value} onChange={handleChangeName} />
+      <input id="name" value={getName()} onChange={handleChangeName} />
     </form>
   )
 }

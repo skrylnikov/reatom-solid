@@ -1,6 +1,6 @@
 {
   "name": "reatom-solid",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Solid bindings for @reatom/core",
   "scripts": {
     "build": "rollup -c && tsc",

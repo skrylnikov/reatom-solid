@@ -1,11 +1,11 @@
 import { Atom, Store, Action } from '@reatom/core'
-import { createState, onCleanup, createContext, useContext } from "solid-js";
+import { onCleanup, createContext, useContext, createSignal } from "solid-js";
 
 const defaultMapper = (atomValue: any) => atomValue
 
 export const context = createContext<Store | null>(null);
 
-export const { Provider: ReatomProvider } = context;
+export const { Provider } = context;
 
 export function createAtomHook(ctx = context) { 
   const useAtom = <TI, TO = TI>(atom: Atom<TI>, selector: (atomValue: TI) => TO = defaultMapper,) => {
@@ -13,10 +13,10 @@ export function createAtomHook(ctx = context) {
     
     if (!store) throw new Error('[reatom] The provider is not defined');
     
-    const [state, setState] = createState({value:   selector(store.getState(atom))});
+    const [state, setState] = createSignal(selector(store.getState(atom)));
 
     const unsubscribe = store.subscribe(atom, (value) => {
-      setState('value', selector(value))
+      setState( selector(value))
     }
       );
     onCleanup(() => unsubscribe());
