@@ -1,0 +1,61 @@
+{
+  "name": "reatom-solid",
+  "version": "0.0.1",
+  "description": "Solid bindings for @reatom/core",
+  "scripts": {
+    "build": "rollup -c && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reatom",
+    "solid",
+    "state",
+    "store",
+    "flux",
+    "atom",
+    "reactive",
+    "reactivity",
+    "state-manager",
+    "state manager",
+    "hooks"
+  ],
+  "author": "Dmitriy Skrylnikov",
+  "license": "MIT",
+  "homepage": "https://github.com/skrylnikov/reatom-solid",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/skrylnikov/reatom-solid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/skrylnikov/reatom-solid/issues"
+  },
+  "sideEffects": "false",
+  "source": "src/index.ts",
+  "main": "lib/index.js",
+  "module": "dist/index.js",
+  "types": "types/index.d.ts",
+  "readme": "README.md",
+  "devDependencies": {
+    "@reatom/core": "^1.0.0",
+    "solid-js": "^0.18.0",
+    "typescript": "^3.8.3",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0",
+    "@rollup/plugin-commonjs": "11.0.2",
+    "rollup": "^2.1.0",
+    "rollup-plugin-babel": "^4.4.0"
+  },
+  "peerDependencies": {
+    "@reatom/core": "^1.0.0",
+    "solid-js": "^0.18.0"
+  },
+  "files": [
+    "/README.md",
+    "/package.json",
+    "/index.ts",
+    "/dist",
+    "/lib",
+    "/types"
+  ]
+}
