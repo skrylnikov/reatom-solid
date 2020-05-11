@@ -4,7 +4,7 @@
   "description": "Solid bindings for @reatom/core",
   "scripts": {
     "build": "rollup -c && tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\""
   },
   "keywords": [
     "reatom",
@@ -34,7 +34,6 @@
   "main": "lib/index.js",
   "module": "dist/index.js",
   "types": "types/index.d.ts",
-  "readme": "README.md",
   "devDependencies": {
     "@reatom/core": "^1.0.0",
     "solid-js": "^0.18.0",
@@ -51,8 +50,6 @@
     "solid-js": "^0.18.0"
   },
   "files": [
-    "/README.md",
-    "/package.json",
     "/index.ts",
     "/dist",
     "/lib",
