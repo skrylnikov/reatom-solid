@@ -16,9 +16,9 @@ export function createAtomHook(ctx = context) {
     const [state, setState] = createSignal(selector(store.getState(atom)));
 
     const unsubscribe = store.subscribe(atom, (value) => {
-      setState( selector(value))
-    }
-      );
+      setState(() => selector(value))
+    });
+
     onCleanup(() => unsubscribe());
       
     return state;
