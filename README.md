@@ -114,3 +114,8 @@ export const Form = () => {
   )
 }
 ```
+
+
+### Demo
+
+[Codesandbox](https://codesandbox.io/s/reatom-solid-example-9u7pj?file=/index.js)
