@@ -16,7 +16,7 @@ or
 yarn add reatom-solid
 ```
 
-> `reatom-solid` depends on and works with `@reatom/core`.
+> `reatom-solid` depends on and works with `@reatom/core` and `solid-js`.
 
 ## Hooks Api
 
@@ -27,13 +27,18 @@ Connects the atom to the store represented in context and returns the state of t
 #### Basic (useAtom)
 
 ```ts
-const atomValue = useAtom(atom)
+const [atomValue] = useAtom(atom)
 ```
 
 #### Depended value by selector
 
 ```ts
 const atomValue = useAtom(atom, atomState => atomState[props.id])
+const atomValue = createMemo(() => {
+    const atom = createAtom({ dataAtom }, ({ get }) => get("dataAtom")[props.id]);
+    const [value] = useAtom(atom);
+    return value;
+});
 ```
 
 ### useAction
@@ -43,13 +48,13 @@ Binds action with dispatch to the store provided in the context.
 #### Basic (useAction)
 
 ```ts
-const handleDoSome = useAction(doSome)
+const handleUpdateData = useAction(dataAtom.update)
 ```
 
 #### Prepare payload for dispatch
 
 ```ts
-const handleDoSome = useAction(value => doSome({ id: props.id, value }))
+const handleUpdateData = useAction((value) => dataAtom.update({ id: props.id, value }))
 ```
 
 #### Conditional dispatch
@@ -57,20 +62,20 @@ const handleDoSome = useAction(value => doSome({ id: props.id, value }))
 If action creator don't return an action dispatch not calling.
 
 ```ts
-const handleDoSome = useAction(payload => {
-  if (condition) return doSome(payload)
+const handleUpdateData = useAction((payload) => {
+  if (condition) return dataAtom.update(payload)
 })
 ```
 
 ## Usage
 
-### Step 1. Create store
+### Step 0 - OPTIONAL. Create store
 
 ```jsx
 // App
 
 import { createStore } from '@reatom/core'
-import { context } from 'reatom-solid'
+import { reatomContext } from 'reatom-solid'
 import { Form } from './components/Form'
 
 import './App.css'
@@ -81,35 +86,33 @@ export const App = () => {
 
   return (
     <div className="App">
-      <context.Provider value={store}>
+      <reatomContext.Provider value={store}>
         <Form />
-      </context.Provider>
+      </reatomContext.Provider>
     </div>
   )
 }
 ```
 
-### Step 2. Use in component
+### Step 1. Bind your atoms.
 
 ```jsx
 // components/Form
 
-import { declareAction, declareAtom } from '@reatom/core'
-import { useAction, useAtom } from 'reatom-solid'
+import { createPrimitiveAtom } from '@reatom/core/primitives'
+import { useAtom } from 'reatom-solid'
 
-const changeName = declareAction()
-const nameAtom = declareAtom('', on => [
-  on(changeName, (state, payload) => payload),
-])
+const nameAtom = createPrimitiveAtom('', {
+  onChange: (e) => e.currentTarget.value,
+})
 
 export const Form = () => {
-  const getName = useAtom(nameAtom)
-  const handleChangeName = useAction(e => changeName(e.target.value))
+  const [name, { onChange }] = useAtom(nameAtom)
 
   return (
     <form>
       <label htmlFor="name">Enter your name</label>
-      <input id="name" value={getName()} onChange={handleChangeName} />
+      <input id="name" value={name} onChange={onChange} />
     </form>
   )
 }
