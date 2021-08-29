@@ -1,61 +1,59 @@
-import { Atom, Store, Action } from '@reatom/core'
-import { onCleanup, createContext, useContext, createSignal, Accessor, Context } from "solid-js";
+import { Atom, AtomState, Store, Action, defaultStore, getState, isActionCreator } from '@reatom/core'
+import { onCleanup, createContext, useContext, createSignal, Accessor } from "solid-js";
 
-const defaultMapper = (atomValue: any) => atomValue
+export const reatomContext = createContext(defaultStore);
 
-export const context: Context<Store | null> = createContext<Store | null>(null);
+function bindActionCreator<T>(
+  store: Store,
+  actionCreator: (payload: T) => Action | Action[] | void,
+) {
+  return (payload: T) => {
+    const action = actionCreator(payload);
 
-export const { Provider } = context;
-
-export function createAtomHook(ctx = context) { 
-  const useAtom = <TI, TO = TI>(atom: Atom<TI>, selector: (atomValue: TI) => TO = defaultMapper): Accessor<TO> => {
-    const store = useContext(ctx);
-    
-    if (!store) throw new Error('[reatom] The provider is not defined');
-    
-    const [state, setState] = createSignal(selector(store.getState(atom)));
-
-    const unsubscribe = store.subscribe(atom, (value) => {
-      setState(() => selector(value))
-    });
-
-    onCleanup(() => unsubscribe());
-      
-    return state;
-  }
-
-  return useAtom;
-}
-
-export const useAtom = createAtomHook();
-
-type AnyActionCreator = (...args: any[]) => Action<any> | void
-
-export function createActionHook(ctx = context) {
-  function useAction<AC extends AnyActionCreator>(
-    cb: AC,
-  ): (...args: Parameters<AC>) => void
-  function useAction(cb: () => Action<any> | void, deps?: any[]): () => void
-  function useAction<T>(
-    cb: (a: T) => Action<any> | void,
-  ): (payload: T) => void
-  function useAction(
-    cb: AnyActionCreator,
-  ): (...args: any[]) => void {
-    const store = useContext(ctx)
-
-    if (!store) throw new Error('[reatom] The provider is not defined')
-    if (typeof cb !== 'function') {
-      throw new TypeError('[reatom] `useAction` argument must be a function')
+    if (action) {
+      store.dispatch(action)
     }
-
-    return (...args) => {
-      const action = cb(...args)
-      if (action) store.dispatch(action)
-    };
   }
-
-  return useAction;
 }
 
-export const useAction = createActionHook();
+export function useAction<T = void>(
+  actionCreator: (payload: T) => Action | Action[] | void,
+) {
+  const store = useContext(reatomContext);
+
+  return bindActionCreator(store, actionCreator);
+}
+
+
+type ActionCreators<T extends any> = {
+  [K in keyof T]: T[K] extends (...a: infer Args) => Action
+    ? (...args: Args) => void
+    : never
+}
+
+
+export function useAtom<T extends Atom>(
+  atom: T,
+): [state: Accessor<AtomState<T>>, bindedActionCreators: ActionCreators<T>] {
+  const store = useContext(reatomContext);
+
+  const [state, setState] = createSignal(getState(atom, store));
+
+  const unsubscribe = store.subscribe(atom, (value) => {
+    setState(value)
+  });
+
+  onCleanup(() => unsubscribe());
+    
+  return [
+    state,
+    Object.entries(atom).reduce((acc, [k, ac]) => {
+      // @ts-expect-error
+      if (isActionCreator(ac)) acc[k] = bindActionCreator(store, ac)
+      return acc
+    }, {} as ActionCreators<T>)
+  ];
+}
+
+
+
