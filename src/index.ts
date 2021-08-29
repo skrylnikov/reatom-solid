@@ -1,4 +1,4 @@
-import { Atom, AtomState, Store, Action, defaultStore, getState } from '@reatom/core'
+import { Atom, AtomState, Store, Action, defaultStore, getState, isActionCreator } from '@reatom/core'
 import { onCleanup, createContext, useContext, createSignal, Accessor } from "solid-js";
 
 export const reatomContext = createContext(defaultStore);
