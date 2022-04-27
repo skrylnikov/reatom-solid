@@ -38,7 +38,7 @@
   "types": "./dist/index.d.ts",
   "devDependencies": {
     "@reatom/core": "^2.0.0-rc7",
-    "microbundle": "^0.13.3",
+    "microbundle": "^0.15.0",
     "solid-js": "^1.0.0",
     "typescript": "^4.4.2"
   },
