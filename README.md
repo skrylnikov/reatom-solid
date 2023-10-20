@@ -3,6 +3,8 @@
 
 [Solid](https://github.com/ryansolid/solid) bindings package for [Reatom](https://github.com/artalar/reatom) store.
 
+# 🚫 Deprecated❗️❗️❗️
+Please use [official adapter](https://www.reatom.dev/adapter/npm-solid-js/)
 
 ## Install
 
